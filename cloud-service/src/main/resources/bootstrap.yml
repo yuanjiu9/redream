@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: RedDream
+  profiles:
+    active: ${profile.active}
+    include: config,push,datasource,jedis,activemq,threadpool,security,trade_cfg,delivery_terminal_cfg,kafka_api,inner_api,mongodb,rest,service_code,hystrix_config,generate_config,event_config,intercept_request,i18n
+  cloud:
+    zookeeper:
+      enabled: true
+      config:
+        enabled: true
+        defaultContext: apps
+        profileSeparator: ':'
+
+endpoints:
+  enabled: false
+  info:
+    enabled: true
+  health:
+    enabled: true
+security:
+    key: wretched growth,don't indulge

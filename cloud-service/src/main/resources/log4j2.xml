@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <properties>
+        <property name="LOG_HOME">./logs/</property>
+        <!-- 日志备份目录 -->
+        <property name="BACKUP_HOME">{LOG_HOME}/backup</property>
+        <property name="CALM_NAME">calm_cloud_trade_online</property>
+        <!--<property name="CALM_DEV_NAME">calm_cloud_trade_dev_online</property>-->
+        <!--<property name="REQ_RES_NAME">calm_router_trade_req</property>-->
+        <property name="ERROR_FILE_NAME">calm_router_trade_error</property>
+        <property name="ASYNC_QUEUE_ERROR_FILENAME">calm_router_trade_AsyncQueueError</property>
+        <property name="SLOW_SQL_FILE_NAME">calm_router_trade_slow_sql</property>
+        <property name="SERVER_NAME">global</property>
+        <property name="MMV_NAME">mmv</property>
+        <property name="LOG_FILE_PATTERN">[%d{yyyy-MM-dd.HH:mm:ss.SSS}|%X{IP}|%p|%t@%X{_KRY_GLOBAL_MSG_ID}|%X{URL} %c.%M(%L):|%m%n</property>
+    </properties>
+    <Appenders>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_FILE_PATTERN}"/>
+        </Console>
+
+        <RollingRandomAccessFile name="CALM" fileName="${LOG_HOME}/${CALM_NAME}.log"
+                                 filePattern="${LOG_HOME}/$${date:yyyyMM}/${CALM_NAME}.%d{yyyyMMdd}.log">
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_FILE_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="ERROR" fileName="${LOG_HOME}/${ERROR_FILE_NAME}.log"
+                                 filePattern="${LOG_HOME}/$${date:yyyyMM}/${ERROR_FILE_NAME}.%d{yyyyMMdd}.log">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_FILE_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="ASYNC_QUEUE_ERROR" fileName="${LOG_HOME}/${ASYNC_QUEUE_ERROR_FILENAME}.log"
+                                 filePattern="${LOG_HOME}/$${date:yyyyMM}/${ASYNC_QUEUE_ERROR_FILENAME}.%d{yyyyMMdd}.log">
+            <PatternLayout pattern="${LOG_FILE_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="SLOW_SQL" fileName="${LOG_HOME}/${SLOW_SQL_FILE_NAME}.log"
+                                 filePattern="${LOG_HOME}/$${date:yyyyMM}/${SLOW_SQL_FILE_NAME}.%d{yyyyMMdd}.log">
+            <PatternLayout pattern="${LOG_FILE_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+
+    </Appenders>
+    <Loggers>
+        <Logger name="org.apache.kafka" level="info" additivity="false"/>
+        <Logger name="com.keruyun.calm.union.mmapper" additivity="false" level="DEBUG">
+            <AppenderRef ref="CALM"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="com.keruyun.framework.async" level="info"/>
+        <Logger name="com.alibaba.druid.filter.stat.StatFilter" additivity="false">
+            <AppenderRef ref="SLOW_SQL"/>
+            <!--<AppenderRef ref="CALM_DEV"/>-->
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="CALM"/>
+        </Logger>
+
+        <Logger name="JdbcTemplateExt" additivity="false" level="DEBUG">
+            <AppenderRef ref="CALM"/>
+            <!--<AppenderRef ref="CALM_DEV"/>-->
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <logger name="com.ibatis" additivity="true">
+            <level value="DEBUG" />
+            <AppenderRef ref="CALM"/>
+            <!--<AppenderRef ref="CALM_DEV"/>-->
+            <AppenderRef ref="Console"/>
+        </logger>
+
+        <logger name="java.sql.Connection" additivity="true">
+            <level value="DEBUG" />
+            <AppenderRef ref="CALM"/>
+            <AppenderRef ref="Console"/>
+        </logger>
+
+        <logger name="java.sql.Statement" additivity="true">
+            <level value="DEBUG" />
+            <AppenderRef ref="CALM"/>
+            <AppenderRef ref="Console"/>
+        </logger>
+
+        <logger name="java.sql.PreparedStatement" additivity="true">
+            <level value="DEBUG" />
+            <AppenderRef ref="CALM"/>
+            <AppenderRef ref="Console"/>
+
+        </logger>
+
+        <logger name="java.sql.ResultSet" additivity="true">
+            <level value="DEBUG" />
+            <AppenderRef ref="CALM"/>
+            <AppenderRef ref="Console"/>
+        </logger>
+
+        <Logger name="org.springframework" level="info"/>
+        <Logger name="org.quartz" level="info"/>
+        <Logger name="org.apache" level="info"/>
+        <Logger name="org.quartz-scheduler" level="info"/>
+        <Logger name="com.alibaba.druid" level="info"/>
+        <Logger name="java.sql" level="info"/>
+        <Logger name="druid.sql" level="info"/>
+        <Logger name="com.keruyun.calm.common.jdbc" level="info"/>
+
+        <Logger name="com.calm" level="info"/>
+        <Logger name="net.rubyeye.xmemcached" level="info"/>
+        <Logger name="com.google.code.yanf4j" level="info"/>
+        <Logger name="AsyncQueueError" additivity="false" level="info">
+            <AppenderRef ref="ASYNC_QUEUE_ERROR"/>
+            <AppenderRef ref="CALM"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="org.apache.log4j.xml" level="info"/>
+        <Logger name="com.keruyun.commons.jdbc.ClassPropertyRowMapper" level="INFO"/>
+        <Logger name="com.keruyun.commons.jdbc.AnnotationRowMapper" level="INFO"/>
+        <Logger name="Request" additivity="false" level="info">
+            <AppenderRef ref="CALM"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="com.keruyun.**.mmapper">
+            <AppenderRef ref="CALM" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="org.springframework.data.mongodb.core">
+            <AppenderRef ref="CALM" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="CALM"/>
+            <AppenderRef ref="ERROR"/>
+        </Root>
+    </Loggers>
+</Configuration>
